@@ -8,27 +8,59 @@ const cors = require('cors');
 const server = express();
 server.use(cors());
 
-const PORT=3002;
+const PORT=process.env.PORT;
+
+class Forecast {
+    constructor(date,discription){
+        this.data=date;
+        this.discription=discription;
+    }
+}
 
 
-// http://localhost:3002//getWeather?weatherName=Amman
+let forecastArr=[];
+let date;
+let description;
+let forecast;
+
+// http://localhost:3001/getWeather?city=amman&lat=31.95&lon=35.91
+
 server.get('/getWeather',(req,res) =>{
-
+    
     console.log(req.query);
     
-    let weatherNameData=req.query.weatherName
-    // let weatherLatData= req.query.weatherLat
-    // let weatherLonData= req.query.weatherLon
+    let cityName=req.query.city
+    let latData= req.query.lat
+    let lonData= req.query.lon
+    
     let weatherItem = weatherData.find(item =>{
-        if(item.city_name == weatherNameData)
+        if( cityName == item.city_name.toLowerCase() && latData == item.lat  && lonData == item.lon )
         return item
     })
-    res.send(weatherItem)
+
+    // console.log(weatherItem);
+
+    try {
+       
+       for(let i=0; i<weatherItem.data.length; i++){
+           
+           date = weatherItem.data[i].datetime;
+           description=`Low of ${weatherItem.data[i].min_temp}, high of ${weatherItem.data[i].temp} with ${weatherItem.data[i].weather.description}`
+           forecast = new Forecast(date,description);
+           forecastArr.push(forecast);
+       }
+       
+       res.send(forecastArr);
+       
+   } catch{
+    res.send('data not found');
+
+   }
 })
 
 
 server.get('*', (req, res) => {
-    res.send('not found fu** world');
+    res.status(404).send;
 })
 
 
