@@ -12,7 +12,7 @@ const PORT=process.env.PORT;
 
 class Forecast {
     constructor(date,discription){
-        this.data=date;
+        this.date=date;
         this.discription=discription;
     }
 }
@@ -30,11 +30,11 @@ server.get('/getWeather',(req,res) =>{
     console.log(req.query);
     
     let cityName=req.query.city
-    let latData= req.query.lat
-    let lonData= req.query.lon
+    // let latData= req.query.lat
+    // let lonData= req.query.lon
     
     let weatherItem = weatherData.find(item =>{
-        if( cityName == item.city_name.toLowerCase() && latData == item.lat  && lonData == item.lon )
+        if( cityName.toLowerCase() == item.city_name.toLowerCase()  )
         return item
     })
 
@@ -53,7 +53,7 @@ server.get('/getWeather',(req,res) =>{
        res.send(forecastArr);
        
    } catch{
-    res.send('data not found');
+    res.send('data not found FROM BACK');
 
    }
 })
