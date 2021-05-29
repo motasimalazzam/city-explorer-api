@@ -11,6 +11,7 @@ server.use(cors());
 
 const PORT=process.env.PORT;
 
+
 // IMPORT FUNCTIONS   
 const movieHandler=require('./modules/movies.js');
 const weatherHandler=require('./modules/weather.js');

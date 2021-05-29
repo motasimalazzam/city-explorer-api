@@ -1,6 +1,8 @@
 const axios = require('axios');
 module.exports=movieHandler;
 
+let inMemory={};
+
 // CLASS FOR MOVIE PROPERTIES
 class Movie{
     constructor(item){
@@ -25,18 +27,27 @@ function movieHandler(req,res){
     let movieUrl=`https://api.themoviedb.org/3/search/movie?api_key=${movieKey}&query=${movieName}`;
     // let result;
     // result= axios.get(movieUrl).then(res.send(result));
-    
-    axios
-     .get(movieUrl)
-       .then(result=>{
-           const movieArr=result.data.results.map(item=>{
-               return new Movie(item);
+
+    if(inMemory[movieName] != undefined){
+        console.log('data from memory');
+        res.send(inMemory[movieName]);
+    }else{
+        console.log('data from API');
+        axios
+         .get(movieUrl)
+           .then(result=>{
+               const movieArr=result.data.results.map(item=>{
+                   return new Movie(item);
+               })
+               inMemory[movieName]=movieArr;
+               res.send(movieArr);
+
+        //    if(movieArr==0){
+        //    }else{res.send(movieArr);}
            })
-       if(movieArr==0){
-        res.send(`No Movie for this City`);
-       }else{res.send(movieArr);}
-       })
-    //    .catch(error=>{
-    //     res.send(`No Movie for this City ${error}`);
-    //    })
+           .catch(error=>{
+            res.send(`No Movie for this City ${error}`);
+           })
+    }
+    
 }
